@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>현장 인덱스</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #666666;
+      --line: #dddddd;
+      --primary: #222222;
+      --primary-hover: #000000;
+      --soft: #f0f0f0;
+      --danger: #b42318;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .login-card,
+    .main-card {
+      width: 100%;
+      max-width: 760px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+      padding: 36px;
+    }
+
+    .main-title {
+      margin: 0;
+      color: #000000;
+      font-size: 38px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -0.04em;
+    }
+
+    .main-subtitle {
+      margin: 12px 0 28px;
+      color: #333333;
+      font-size: 15px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      background: #ffffff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #111111;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s, opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    button:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-soft {
+      background: var(--soft);
+      color: #111111;
+    }
+
+    .btn-danger {
+      background: #fff1f0;
+      color: var(--danger);
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #f8f8f8;
+      color: #555555;
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .hidden { display: none !important; }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand h1 {
+      margin: 0;
+      color: #000000;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .brand p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section-title {
+      margin: 28px 0 14px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333333;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .action-bar {
+      position: sticky;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 26px;
+      padding-top: 18px;
+      background: linear-gradient(to top, #fff 75%, rgba(255,255,255,0));
+    }
+
+    .preview-box {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px dashed #c8c8c8;
+      border-radius: 16px;
+      background: #fafafa;
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: #222222;
+    }
+
+    .tabbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tabbar button {
+      padding: 10px 13px;
+      font-size: 13px;
+    }
+
+    .manual-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #ffffff;
+    }
+
+    .manual-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .manual-item span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .record-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: #ffffff;
+    }
+
+    .record-item strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .record-item small { color: var(--muted); }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%);
+      background: #111111;
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.42);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 30;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 620px;
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.22);
+    }
+
+    .modal h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+    }
+
+    .modal textarea {
+      min-height: 210px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .login-card,
+      .main-card { padding: 24px; }
+
+      .main-title { font-size: 30px; }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .form-grid { grid-template-columns: 1fr; }
+
+      .action-bar {
+        grid-template-columns: 1fr 1fr;
+        position: static;
+      }
+
+      .button-grid { grid-template-columns: 1fr; }
+
+      .input-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section id="loginPage" class="login-card">
+      <h1 class="main-title">현장 인덱스</h1>
+      <p class="main-subtitle">의뢰 내용 · 촬영 정보 · 기자/PD/VJ 정보를 한 번에 정리합니다.</p>
+
+      <div class="input-row">
+        <input id="accessCode" type="password" placeholder="접근 코드를 입력하세요" autocomplete="off" inputmode="text" enterkeyhint="go" />
+        <button type="button" class="btn-primary" onclick="login()">로그인</button>
+      </div>
+
+      <div class="button-grid">
+        <button type="button" class="btn-soft" onclick="openPublicSection('records')">기록 보기</button>
+        <button type="button" class="btn-soft" onclick="adminLogin()">관리자</button>
+      </div>
+
+      <div class="notice">
+        로그인 코드 입력 후 인덱 작성 가능합니다
+      </div>
+    </section>
+
+    <section id="mainPage" class="main-card hidden">
+      <div class="topbar">
+        <div class="brand">
+          <h1>현장 인덱스</h1>
+          <p>의뢰 내용 · 촬영 정보 · 기자/PD/VJ 정보를 한 번에 정리합니다.</p>
+        </div>
+        <button type="button" class="btn-soft" onclick="logout()">처음으로</button>
+      </div>
+
+      <div class="tabbar">
+        <button type="button" class="btn-primary" onclick="showPanel('formPanel')">Note</button>
+        <button type="button" class="btn-soft" onclick="showPanel('recordsPanel')">기록</button>
+      </div>
+
+      <div id="formPanel">
+        <h2 class="section-title">Note</h2>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>의뢰자</label>
+            <input id="requester" placeholder="예: 양현진" />
+          </div>
+
+          <div class="field">
+            <label>촬영일</label>
+            <input id="shootingDate" type="date" />
+          </div>
+
+          <div class="field">
+            <label>기자동행여부</label>
+            <select id="reporterTogether">
+              <option value="">선택</option>
+              <option>동행</option>
+              <option>미동행</option>
+              <option>현장합류</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label>제목</label>
+            <input id="title" placeholder="" />
+          </div>
+
+          <div class="field full">
+            <label>특이사항</label>
+            <textarea id="specialNote" placeholder="예: 현장 특이사항"></textarea>
+          </div>
+
+          <div class="field full">
+            <label>촬영 내용</label>
+            <textarea id="shootingContent" placeholder="예: 촬영 현장 내용"></textarea>
+          </div>
+
+          <div class="field full">
+            <label>촬영장소</label>
+            <input id="shootingLocation" placeholder="" />
+          </div>
+
+          <div class="field">
+            <label>영상 기자</label>
+            <input id="videoReporter" placeholder="" />
+          </div>
+
+          <div class="field">
+            <label>취재기자</label>
+            <input id="newsReporter" placeholder="" />
+          </div>
+
+          <div class="field full">
+            <label>영상 PD/VJ</label>
+            <input id="videoPdVj" placeholder="" />
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button type="button" class="btn-danger" onclick="resetForm()">초기화</button>
+          <button type="button" class="btn-soft" onclick="openParseModal()">의뢰 내용</button>
+          <button type="button" class="btn-soft" onclick="copyContent()">내용 복사</button>
+          <button type="button" class="btn-primary" onclick="saveRecord()">저장</button>
+        </div>
+
+        <h2 class="section-title">복사 미리보기</h2>
+        <div id="previewBox" class="preview-box">입력한 내용이 이곳에 미리보기로 표시됩니다.</div>
+      </div>
+
+      <div id="recordsPanel" class="hidden">
+        <h2 class="section-title">기록</h2>
+        <div id="recordsList"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="parseModal" class="modal-bg hidden">
+    <div class="modal">
+      <h2>의뢰 내용</h2>
+      <textarea id="rawRequest" placeholder=""></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn-soft" onclick="closeParseModal()">취소</button>
+        <button type="button" class="btn-primary" onclick="parseRequest()">입력</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fields = [
+      "requester",
+      "shootingDate",
+      "reporterTogether",
+      "title",
+      "specialNote",
+      "shootingContent",
+      "shootingLocation",
+      "videoReporter",
+      "newsReporter",
+      "videoPdVj"
+    ];
+
+    let currentLoginCode = "";
+    const ACCESS_CODES = ["1234", "guswls1"];
+    const ADMIN_CODE = "ychj561!@&";
+
+    const VIDEO_REPORTERS = [
+      "이세훈",
+      "정연철",
+      "서두범",
+      "방종혁",
+      "김신영",
+      "이성재",
+      "장영근",
+      "위동원",
+      "김준형",
+      "전인제",
+      "최대환",
+      "김승우",
+      "김동세",
+      "변준언",
+      "박다원",
+      "윤대일",
+      "김해동"
+    ];
+
+    const VIDEO_PD_VJ = [
+      "한재훈",
+      "이상용",
+      "윤병순",
+      "전효석",
+      "남현택",
+      "강종수",
+      "이주혁",
+      "독고명",
+      "김백승",
+      "강재훈",
+      "이관호",
+      "임지환",
+      "이원석",
+      "김창인",
+      "황주연",
+      "김민승",
+      "정영진"
+    ];
+
+    function login() {
+      const codeInput = document.getElementById("accessCode");
+      const code = codeInput.value.trim();
+
+      if (ACCESS_CODES.includes(code) || code === ADMIN_CODE) {
+        currentLoginCode = code;
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("mainPage").classList.remove("hidden");
+        showPanel("formPanel");
+        loadSavedNote();
+        updatePreview();
+
+        if (code === ADMIN_CODE) {
+          showToast("관리자 코드로 로그인되었습니다.");
+        }
+      } else {
+        showToast("접근 코드가 맞지 않습니다.");
+      }
+    }
+
+    function adminLogin() {
+      const code = document.getElementById("accessCode").value.trim();
+
+      if (code === ADMIN_CODE) {
+        currentLoginCode = code;
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("mainPage").classList.remove("hidden");
+        showPanel("recordsPanel");
+        showToast("관리자 인증이 완료되었습니다.");
+      } else if (!code) {
+        showToast("관리자 코드를 입력하세요.");
+      } else {
+        showToast("관리자 코드가 맞지 않습니다.");
+      }
+    }
+
+    function logout() {
+      currentLoginCode = "";
+      document.getElementById("mainPage").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+      document.getElementById("accessCode").value = "";
+    }
+
+    function openPublicSection(panel) {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("mainPage").classList.remove("hidden");
+
+      if (panel === "records") showPanel("recordsPanel");
+    }
+
+    function showPanel(id) {
+      ["formPanel", "recordsPanel"].forEach(panel => {
+        document.getElementById(panel).classList.add("hidden");
+      });
+
+      document.getElementById(id).classList.remove("hidden");
+
+      if (id === "recordsPanel") renderRecords();
+    }
+
+    function getStoragePrefix() {
+      return currentLoginCode || "guest";
+    }
+
+    function getNoteKey() {
+      return "fieldIndexNote:" + getStoragePrefix();
+    }
+
+    function getRecordsKey() {
+      return "fieldIndexRecords:" + getStoragePrefix();
+    }
+
+    function collectFormData() {
+      const data = {};
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        data[id] = el ? el.value.trim() : "";
+      });
+      return data;
+    }
+
+    function fillFormData(data) {
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = data && data[id] ? data[id] : "";
+      });
+    }
+
+    function loadSavedNote() {
+      const saved = localStorage.getItem(getNoteKey());
+
+      if (!saved) {
+        fillFormData({});
+        return;
+      }
+
+      try {
+        fillFormData(JSON.parse(saved));
+        showToast("저장된 Note 내용을 불러왔습니다.");
+      } catch (e) {
+        fillFormData({});
+      }
+    }
+
+    function getContent() {
+      const data = collectFormData();
+
+      return `[현장 인덱스 Note]
+
+■ 의뢰자
+${data.requester || "-"}
+
+■ 촬영일
+${data.shootingDate || "-"}
+
+■ 기자동행여부
+${data.reporterTogether || "-"}
+
+■ 제목
+${data.title || "-"}
+
+■ 특이사항
+${data.specialNote || "-"}
+
+■ 촬영 내용
+${data.shootingContent || "-"}
+
+■ 촬영장소
+${data.shootingLocation || "-"}
+
+■ 영상 기자
+${data.videoReporter || "-"}
+
+■ 취재기자
+${data.newsReporter || "-"}
+
+■ 영상 PD/VJ
+${data.videoPdVj || "-"}`;
+    }
+
+    function updatePreview() {
+      const preview = document.getElementById("previewBox");
+      if (preview) preview.textContent = getContent();
+    }
+
+    function resetForm() {
+      if (!confirm("현재 로그인 코드로 저장된 Note 내용을 초기화하시겠습니까?")) return;
+
+      fillFormData({});
+      localStorage.removeItem(getNoteKey());
+      updatePreview();
+      showToast("현재 로그인 코드의 Note 내용만 초기화되었습니다.");
+    }
+
+    async function copyContent() {
+      const content = getContent();
+
+      try {
+        await navigator.clipboard.writeText(content);
+        showToast("입력 내용이 복사되었습니다.");
+      } catch (e) {
+        showToast("복사에 실패했습니다. 브라우저 권한을 확인하세요.");
+      }
+    }
+
+    function saveRecord() {
+      const data = collectFormData();
+      const records = JSON.parse(localStorage.getItem(getRecordsKey()) || "[]");
+      const title = data.title || "제목 없음";
+
+      localStorage.setItem(getNoteKey(), JSON.stringify(data));
+
+      records.unshift({
+        title: title,
+        createdAt: new Date().toLocaleString("ko-KR"),
+        content: getContent()
+      });
+
+      localStorage.setItem(getRecordsKey(), JSON.stringify(records.slice(0, 30)));
+      showToast("저장되었습니다. 정식 배포 시 서버 동기화로 연결됩니다.");
+      renderRecords();
+    }
+
+    function renderRecords() {
+      const records = JSON.parse(localStorage.getItem(getRecordsKey()) || "[]");
+      const list = document.getElementById("recordsList");
+
+      if (!list) return;
+
+      if (!records.length) {
+        list.innerHTML = `<div class="manual-item"><strong>저장된 기록이 없습니다.</strong><span>Note 화면에서 저장 버튼을 누르면 이곳에 기록됩니다.</span></div>`;
+        return;
+      }
+
+      list.innerHTML = records.map((record, index) => `
+        <div class="record-item">
+          <strong>${escapeHTML(record.title)}</strong>
+          <small>${escapeHTML(record.createdAt)}</small>
+          <div class="preview-box">${escapeHTML(record.content)}</div>
+          <button type="button" class="btn-soft" onclick="copyRecord(${index})">이 기록 복사</button>
+        </div>
+      `).join("");
+    }
+
+    async function copyRecord(index) {
+      const records = JSON.parse(localStorage.getItem(getRecordsKey()) || "[]");
+
+      if (!records[index]) return;
+
+      try {
+        await navigator.clipboard.writeText(records[index].content);
+        showToast("기록 내용이 복사되었습니다.");
+      } catch (e) {
+        showToast("복사에 실패했습니다.");
+      }
+    }
+
+    function openParseModal() {
+      document.getElementById("parseModal").classList.remove("hidden");
+      const rawInput = document.getElementById("rawRequest");
+      if (rawInput) {
+        rawInput.value = "";
+        setTimeout(() => rawInput.focus(), 0);
+      }
+    }
+
+    function closeParseModal() {
+      const modal = document.getElementById("parseModal");
+      const rawInput = document.getElementById("rawRequest");
+
+      if (rawInput) rawInput.value = "";
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function normalizeReporterTogether(value) {
+      const raw = (value || "").replace(/\s/g, "");
+
+      if (!raw) return "";
+      if (raw.includes("동행안함") || raw.includes("동행아님") || raw.includes("미동행") || raw.includes("동행없음")) return "미동행";
+      if (raw.includes("현장합류")) return "현장합류";
+      if (raw.includes("동행")) return "동행";
+
+      return value;
+    }
+
+    function extractDate(value) {
+      const clean = (value || "").replace(/까지/g, "").trim();
+      const match = clean.match(/(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})/);
+
+      if (!match) return "";
+
+      const year = match[1];
+      const month = String(match[2]).padStart(2, "0");
+      const day = String(match[3]).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+    function classifyPeople(nameA, nameB) {
+      const candidates = [nameA, nameB].map(name => (name || "").trim()).filter(Boolean);
+
+      let newsReporter = "";
+      let videoReporter = "";
+      let videoPdVj = "";
+
+      candidates.forEach(name => {
+        if (VIDEO_REPORTERS.includes(name) && !videoReporter) {
+          videoReporter = name;
+        } else if (VIDEO_PD_VJ.includes(name) && !videoPdVj) {
+          videoPdVj = name;
+        } else if (!newsReporter) {
+          newsReporter = name;
+        }
+      });
+
+      return { newsReporter, videoReporter, videoPdVj };
+    }
+
+    function parseRequest() {
+      const rawInput = document.getElementById("rawRequest");
+      const modal = document.getElementById("parseModal");
+      const raw = rawInput.value.trim();
+
+      if (!raw) {
+        showToast("붙여넣을 내용을 입력하세요.");
+        return;
+      }
+
+      const lines = raw.split(/\n+/).map(v => v.trim()).filter(Boolean);
+      let headerIndex = lines.findIndex(line => line.split(",").length >= 5);
+      if (headerIndex < 0) headerIndex = 0;
+
+      const header = lines[headerIndex] || "";
+      const body = lines.filter((_, index) => index !== headerIndex).join("\n\n");
+      const parts = header.split(",").map(v => v.trim());
+
+      const title = parts[0] || "";
+      const people = classifyPeople(parts[1] || "", parts[2] || "");
+      const reporterTogether = normalizeReporterTogether(parts[3] || "");
+      const shootingLocation = parts[4] || "";
+      const shootingDate = extractDate(parts.slice(5).join(", "));
+
+      document.getElementById("title").value = title;
+      document.getElementById("requester").value = people.videoReporter || people.videoPdVj || "";
+      document.getElementById("newsReporter").value = people.newsReporter;
+      document.getElementById("videoReporter").value = people.videoReporter;
+      document.getElementById("videoPdVj").value = people.videoPdVj;
+      document.getElementById("reporterTogether").value = reporterTogether;
+      document.getElementById("shootingLocation").value = shootingLocation;
+      document.getElementById("shootingDate").value = shootingDate;
+      document.getElementById("shootingContent").value = body;
+      document.getElementById("specialNote").value = "";
+
+      updatePreview();
+
+      rawInput.value = "";
+      if (modal) modal.classList.add("hidden");
+
+      showPanel("formPanel");
+      showToast("의뢰 내용이 입력되었습니다.");
+    }
+
+    function showToast(message) {
+      const old = document.querySelector(".toast");
+      if (old) old.remove();
+
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        if (toast && toast.remove) toast.remove();
+      }, 1800);
+    }
+
+    function escapeHTML(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const accessInput = document.getElementById("accessCode");
+
+      if (accessInput) {
+        accessInput.addEventListener("keydown", event => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            login();
+          }
+        });
+      }
+
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("input", updatePreview);
+      });
+
+      updatePreview();
+    });
+  </script>
+</body>
+</html>
