@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>현장 인덱스</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #666666;
+      --line: #dddddd;
+      --primary: #222222;
+      --primary-hover: #000000;
+      --soft: #f0f0f0;
+      --danger: #b42318;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .login-card,
+    .main-card {
+      width: 100%;
+      max-width: 760px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+      padding: 36px;
+    }
+
+    .main-title {
+      margin: 0;
+      color: #000000;
+      font-size: 38px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -0.04em;
+    }
+
+    .main-subtitle {
+      margin: 12px 0 28px;
+      color: #333333;
+      font-size: 15px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+
+    .clock-display {
+      margin: 18px auto 8px;
+      padding: 14px 16px;
+      max-width: 420px;
+      border-radius: 16px;
+      background: #f7f7f7;
+      border: 1px solid #e4e4e4;
+      text-align: center;
+      color: #111111;
+    }
+
+    .clock-date {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .clock-time {
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      background: #ffffff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #111111;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s, opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    button:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-soft {
+      background: var(--soft);
+      color: #111111;
+    }
+
+    .btn-danger {
+      background: #fff1f0;
+      color: var(--danger);
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #f8f8f8;
+      color: #555555;
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .hidden { display: none !important; }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand h1 {
+      margin: 0;
+      color: #000000;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .brand p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section-title {
+      margin: 28px 0 14px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333333;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .action-bar {
+      position: sticky;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 26px;
+      padding-top: 18px;
+      background: linear-gradient(to top, #fff 75%, rgba(255,255,255,0));
+    }
+
+    .preview-box {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px dashed #c8c8c8;
+      border-radius: 16px;
+      background: #fafafa;
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: #222222;
+    }
+
+    .tabbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tabbar button {
+      padding: 10px 13px;
+      font-size: 13px;
+    }
+
+    .manual-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #ffffff;
+    }
+
+    .manual-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .manual-item span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .record-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: #ffffff;
+    }
+
+    .record-item strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .record-item small { color: var(--muted); }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%);
+      background: #111111;
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.42);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 30;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 620px;
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.22);
+    }
+
+    .modal h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+    }
+
+    .modal textarea {
+      min-height: 210px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .login-card,
+      .main-card { padding: 24px; }
+
+      .main-title { font-size: 30px; }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .form-grid { grid-template-columns: 1fr; }
+
+      .action-bar {
+        grid-template-columns: 1fr 1fr;
+        position: static;
+      }
+
+      .button-grid { grid-template-columns: 1fr; }
+
+  
+    .clock-display {
+      margin: 18px auto 8px;
+      padding: 14px 16px;
+      max-width: 420px;
+      border-radius: 16px;
+      background: #f7f7f7;
+      border: 1px solid #e4e4e4;
+      text-align: center;
+      color: #111111;
+    }
+
+    .clock-date {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .clock-time {
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .input-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section id="loginPage" class="login-card">
+      <h1 class="main-title">현장 인덱스</h1>
+      <p class="main-subtitle">의뢰 내용 · 촬영 정보 · 기자/PD/VJ 정보를 한 번에 정리합니다.</p>
+
+      <div class="clock-display">
+        <div id="clockDate" class="clock-date">대한민국 기준 날짜</div>
+        <div id="clockTime" class="clock-time">--:--:--</div>
+      </div>
+
+      <div class="input-row">
+        <input id="accessCode" type="password" placeholder="접근 코드를 입력하세요" autocomplete="off" inputmode="text" enterkeyhint="go" />
+        <button type="button" class="btn-primary" onclick="login()">로그인</button>
+      </div>
+
+      <div class="button-grid">
+        <button type="button" class="btn-soft" onclick="adminLogin()">관리자</button>
+        <button type="button" class="btn-soft" onclick="openGuideModal()">사용 안내</button>
+      </div>
+
+      <div class="notice">
+        로그인 코드 입력 후 인덱 작성 가능합니다
+      </div>
+    </section>
+
+    <section id="mainPage" class="main-card hidden">
+      <div class="topbar">
+        <div class="brand">
+          <h1>현장 인덱스</h1>
+          <p>의뢰 내용 · 촬영 정보 · 기자/PD/VJ 정보를 한 번에 정리합니다.</p>
+        </div>
+        <button type="button" class="btn-soft" onclick="logout()">처음으로</button>
+      </div>
+
+      <div class="tabbar">
+        <button type="button" class="btn-primary" onclick="showPanel('formPanel')">Note</button>
+        <button type="button" class="btn-soft" onclick="showPanel('recordsPanel')">기록</button>
+      </div>
+
+      <div id="formPanel">
+        <h2 class="section-title">Note</h2>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>의뢰자</label>
+            <input id="requester" placeholder="예: 양현진" />
+          </div>
+
+          <div class="field">
+            <label>촬영일</label>
+            <input id="shootingDate" type="date" />
+          </div>
+
+          <div class="field">
+            <label>기자동행여부</label>
+            <select id="reporterTogether">
+              <option value="">선택</option>
+              <option>동행</option>
+              <option>미동행</option>
+              <option>현장합류</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label>제목</label>
+            <input id="title" placeholder="" />
+          </div>
+
+          <div class="field full">
+            <label>특이사항</label>
+            <textarea id="specialNote" placeholder="예: 현장 특이사항"></textarea>
+          </div>
+
+          <div class="field full">
+            <label>촬영 내용</label>
+            <textarea id="shootingContent" placeholder="예: 촬영 현장 내용"></textarea>
+          </div>
+
+          <div class="field full">
+            <label>촬영장소</label>
+            <input id="shootingLocation" placeholder="" />
+          </div>
+
+          <div class="field">
+            <label>영상 기자</label>
+            <input id="videoReporter" placeholder="" />
+          </div>
+
+          <div class="field">
+            <label>취재기자</label>
+            <input id="newsReporter" placeholder="" />
+          </div>
+
+          <div class="field full">
+            <label>영상 PD/VJ</label>
+            <input id="videoPdVj" placeholder="" />
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button type="button" class="btn-danger" onclick="resetForm()">초기화</button>
+          <button type="button" class="btn-soft" onclick="openParseModal()">의뢰 내용</button>
+          <button type="button" class="btn-soft" onclick="copyContent()">내용 복사</button>
+          <button type="button" class="btn-primary" onclick="saveRecord()">저장</button>
+        </div>
+
+        <h2 class="section-title">복사 미리보기</h2>
+        <div id="previewBox" class="preview-box">입력한 내용이 이곳에 미리보기로 표시됩니다.</div>
+      </div>
+
+      <div id="recordsPanel" class="hidden">
+        <h2 class="section-title">기록</h2>
+        <div id="recordsList"></div>
+      </div>
+
+      <div id="adminPanel" class="hidden">
+        <h2 class="section-title">관리자</h2>
+
+        <div class="manual-item">
+          <strong>로그인 코드 관리</strong>
+          <span>관리자 코드로 접속한 사람만 로그인 코드를 추가·삭제할 수 있습니다. 코드 목록은 Firebase Firestore에 저장되어 모든 기기에서 공유됩니다.</span>
+        </div>
+
+        <div id="firebaseStatus" class="notice" style="margin-top: 16px; text-align: left;">
+          Firebase 연결 상태를 확인하는 중입니다.
+        </div>
+
+        <div class="form-grid" style="margin-top: 16px;">
+          <div class="field full">
+            <label>새 로그인 코드</label>
+            <input id="newAccessCode" placeholder="예: user2026" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="action-bar" style="position: static; grid-template-columns: repeat(3, 1fr);">
+          <button type="button" class="btn-primary" onclick="addAccessCode()">코드 추가</button>
+          <button type="button" class="btn-soft" onclick="importLocalAccessCodes()">기존 코드 가져오기</button>
+          <button type="button" class="btn-soft" onclick="syncAccessCodes()">서버 동기화</button>
+        </div>
+
+        <h2 class="section-title">현재 사용 가능한 로그인 코드</h2>
+        <div id="accessCodeList"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="parseModal" class="modal-bg hidden">
+    <div class="modal">
+      <h2>의뢰 내용</h2>
+      <textarea id="rawRequest" placeholder=""></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn-soft" onclick="closeParseModal()">취소</button>
+        <button type="button" class="btn-primary" onclick="parseRequest()">입력</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="guideModal" class="modal-bg hidden">
+    <div class="modal">
+      <h2>사용 안내</h2>
+      <div class="manual-item">
+        <strong>1. 로그인 코드 입력</strong>
+        <span>발급받은 로그인 코드를 입력한 뒤 로그인 버튼을 누르면 Note 작성 화면으로 이동합니다.</span>
+      </div>
+      <div class="manual-item" style="margin-top: 10px;">
+        <strong>2. Note 작성</strong>
+        <span>의뢰자, 촬영일, 제목, 촬영 내용, 촬영장소, 기자 정보를 직접 입력할 수 있습니다.</span>
+      </div>
+      <div class="manual-item" style="margin-top: 10px;">
+        <strong>3. 의뢰 내용 자동 입력</strong>
+        <span>Note 화면의 의뢰 내용 버튼을 누른 뒤 의뢰서를 붙여넣고 입력을 누르면 주요 항목이 자동으로 정리됩니다.</span>
+      </div>
+      <div class="manual-item" style="margin-top: 10px;">
+        <strong>4. 저장</strong>
+        <span>저장 버튼을 누르면 현재 로그인 코드 기준으로 내용이 저장됩니다.</span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-primary" onclick="closeGuideModal()">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fields = [
+      "requester",
+      "shootingDate",
+      "reporterTogether",
+      "title",
+      "specialNote",
+      "shootingContent",
+      "shootingLocation",
+      "videoReporter",
+      "newsReporter",
+      "videoPdVj"
+    ];
+
+    let currentLoginCode = "";
+    let accessCodesCache = [];
+    let accessCodesLoaded = false;
+
+    const INITIAL_ACCESS_CODES = ["1234", "guswls1"];
+    const ADMIN_CODE = "ychj561!@&";
+
+    // Firebase 설정값을 Firebase Console에서 복사해 아래에 붙여넣으세요.
+    // 필수값: apiKey, projectId
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyB1qCpdKmVNWDuAVXkTD_OpaGVErEmDtaI",
+      projectId: "field-index"
+    };
+
+    const FIRESTORE_COLLECTION = "fieldIndex";
+    const FIRESTORE_DOCUMENT = "accessCodes";
+
+    function isFirebaseConfigured() {
+      return FIREBASE_CONFIG.apiKey
+        && FIREBASE_CONFIG.projectId
+        && !FIREBASE_CONFIG.apiKey.includes("YOUR_")
+        && !FIREBASE_CONFIG.projectId.includes("YOUR_");
+    }
+
+    function getFirestoreDocUrl() {
+      return `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/${FIRESTORE_COLLECTION}/${FIRESTORE_DOCUMENT}?key=${FIREBASE_CONFIG.apiKey}`;
+    }
+
+    function normalizeCodes(codes) {
+      return Array.from(new Set((codes || []).map(code => String(code).trim()).filter(Boolean)));
+    }
+
+    function decodeFirestoreCodes(data) {
+      const values = data?.fields?.codes?.arrayValue?.values || [];
+      return normalizeCodes(values.map(item => item.stringValue || ""));
+    }
+
+    function encodeFirestoreCodes(codes) {
+      return {
+        fields: {
+          codes: {
+            arrayValue: {
+              values: normalizeCodes(codes).map(code => ({ stringValue: code }))
+            }
+          },
+          updatedAt: {
+            timestampValue: new Date().toISOString()
+          }
+        }
+      };
+    }
+
+    function setFirebaseStatus(message) {
+      const status = document.getElementById("firebaseStatus");
+      if (status) status.textContent = message;
+    }
+
+    async function loadAccessCodesFromFirebase() {
+      if (!isFirebaseConfigured()) {
+        accessCodesCache = getLocalAccessCodesFallback();
+        accessCodesLoaded = true;
+        setFirebaseStatus("Firebase 설정값이 아직 입력되지 않았습니다. 현재는 이 브라우저 안에서만 코드가 저장됩니다.");
+        return accessCodesCache;
+      }
+
+      try {
+        const response = await fetch(getFirestoreDocUrl());
+
+        if (response.status === 404) {
+          accessCodesCache = normalizeCodes(INITIAL_ACCESS_CODES);
+          await saveAccessCodesToFirebase(accessCodesCache);
+          accessCodesLoaded = true;
+          setFirebaseStatus("Firebase 연결 완료 · 기본 로그인 코드 문서를 생성했습니다.");
+          return accessCodesCache;
+        }
+
+        if (!response.ok) {
+          throw new Error(`Firestore 읽기 실패: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const codes = decodeFirestoreCodes(data);
+
+        accessCodesCache = codes.length ? codes : normalizeCodes(INITIAL_ACCESS_CODES);
+        accessCodesLoaded = true;
+        setFirebaseStatus("Firebase 연결 완료 · 로그인 코드 목록을 서버에서 불러왔습니다.");
+        return accessCodesCache;
+      } catch (error) {
+        console.error(error);
+        accessCodesCache = getLocalAccessCodesFallback();
+        accessCodesLoaded = true;
+        setFirebaseStatus("Firebase 연결 실패 · 임시로 이 브라우저의 백업 코드 목록을 사용합니다.");
+        return accessCodesCache;
+      }
+    }
+
+    async function saveAccessCodesToFirebase(codes) {
+      const normalized = normalizeCodes(codes);
+      accessCodesCache = normalized;
+      localStorage.setItem("accessCodesLocalBackup", JSON.stringify(normalized));
+
+      if (!isFirebaseConfigured()) {
+        setFirebaseStatus("Firebase 설정값이 없어 서버 저장은 되지 않았습니다. Firebase 설정값을 입력해야 모든 기기에서 공유됩니다.");
+        return false;
+      }
+
+      const response = await fetch(getFirestoreDocUrl(), {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(encodeFirestoreCodes(normalized))
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Firestore 저장 실패: ${response.status} ${text}`);
+      }
+
+      localStorage.setItem("accessCodesLastSyncedAt", new Date().toISOString());
+      localStorage.setItem("accessCodesSyncedSnapshot", JSON.stringify(normalized));
+      setFirebaseStatus("Firebase 서버 동기화 완료 · 모든 기기에서 같은 로그인 코드 목록을 사용합니다.");
+      return true;
+    }
+
+    function getLocalAccessCodesFallback() {
+      try {
+        const saved = localStorage.getItem("accessCodesLocalBackup") || localStorage.getItem("accessCodes");
+        if (saved !== null) {
+          const parsed = JSON.parse(saved);
+          const codes = normalizeCodes(parsed);
+          if (codes.length) return codes;
+        }
+      } catch (e) {
+        // 백업 데이터가 깨졌을 경우 초기값 사용
+      }
+
+      return normalizeCodes(INITIAL_ACCESS_CODES);
+    }
+
+    async function ensureAccessCodesLoaded() {
+      if (accessCodesLoaded && accessCodesCache.length) {
+        return accessCodesCache;
+      }
+
+      return await loadAccessCodesFromFirebase();
+    }
+
+    function getAllAccessCodes() {
+      return accessCodesCache.length ? accessCodesCache : getLocalAccessCodesFallback();
+    }
+
+    async function saveAllAccessCodes(codes) {
+      return await saveAccessCodesToFirebase(codes);
+    }
+
+    const VIDEO_REPORTERS = [
+      "이세훈",
+      "정연철",
+      "서두범",
+      "방종혁",
+      "김신영",
+      "이성재",
+      "장영근",
+      "위동원",
+      "김준형",
+      "전인제",
+      "최대환",
+      "김승우",
+      "김동세",
+      "변준언",
+      "박다원",
+      "윤대일",
+      "김해동",
+      "구본원",
+      "고현준",
+      "나준영",
+      "최경순",
+      "조은수",
+      "이종혁",
+      "김태효",
+      "임정환",
+      "정민환",
+      "송록필",
+      "현기택",
+      "박지민",
+      "이형빈",
+      "박주영",
+      "허원철",
+      "김희건",
+      "이주영"
+    ];
+
+    const VIDEO_PD_VJ = [
+      "한재훈",
+      "이상용",
+      "윤병순",
+      "전효석",
+      "남현택",
+      "강종수",
+      "이주혁",
+      "독고명",
+      "김백승",
+      "강재훈",
+      "이관호",
+      "임지환",
+      "이원석",
+      "김창인",
+      "황주연",
+      "김민승",
+      "정영진",
+      "나경운"
+    ];
+
+    async function login() {
+      const codeInput = document.getElementById("accessCode");
+      const code = codeInput.value.trim();
+      const codes = await ensureAccessCodesLoaded();
+
+      if (codes.includes(code)) {
+        currentLoginCode = code;
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("mainPage").classList.remove("hidden");
+        showPanel("formPanel");
+        loadSavedNote();
+        updatePreview();
+      } else if (code === ADMIN_CODE) {
+        showToast("관리자 접속은 관리자 버튼을 눌러주세요.");
+      } else {
+        showToast("접근 코드가 맞지 않습니다.");
+      }
+    }
+
+    async function adminLogin() {
+      const code = document.getElementById("accessCode").value.trim();
+
+      if (code === ADMIN_CODE) {
+        currentLoginCode = "admin";
+        await ensureAccessCodesLoaded();
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("mainPage").classList.remove("hidden");
+        showPanel("adminPanel");
+        renderAccessCodes();
+        showToast("관리자 인증이 완료되었습니다.");
+      } else if (!code) {
+        showToast("관리자 코드를 입력하세요.");
+      } else {
+        showToast("관리자 코드가 맞지 않습니다.");
+      }
+    }
+
+    function logout() {
+      currentLoginCode = "";
+      document.getElementById("mainPage").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+      document.getElementById("accessCode").value = "";
+    }
+
+    function openPublicSection(panel) {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("mainPage").classList.remove("hidden");
+
+      if (panel === "records") showPanel("recordsPanel");
+    }
+
+    function showPanel(id) {
+      ["formPanel", "recordsPanel", "adminPanel"].forEach(panel => {
+        document.getElementById(panel).classList.add("hidden");
+      });
+
+      document.getElementById(id).classList.remove("hidden");
+
+      if (id === "recordsPanel") renderRecords();
+    }
+
+    function getStoragePrefix() {
+      return currentLoginCode || "guest";
+    }
+
+    function getNoteKey() {
+      return "fieldIndexNote:" + getStoragePrefix();
+    }
+
+    function getRecordsKey() {
+      return "fieldIndexRecords:" + getStoragePrefix();
+    }
+
+    function collectFormData() {
+      const data = {};
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        data[id] = el ? el.value.trim() : "";
+      });
+      return data;
+    }
+
+    function fillFormData(data) {
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = data && data[id] ? data[id] : "";
+      });
+    }
+
+    function loadSavedNote() {
+      const saved = localStorage.getItem(getNoteKey());
+
+      if (!saved) {
+        fillFormData({});
+        return;
+      }
+
+      try {
+        fillFormData(JSON.parse(saved));
+        showToast("저장된 Note 내용을 불러왔습니다.");
+      } catch (e) {
+        fillFormData({});
+      }
+    }
+
+    function getContent() {
+      const data = collectFormData();
+
+      return `[현장 인덱스 Note]
+
+■ 의뢰자
+${data.requester || "-"}
+
+■ 촬영일
+${data.shootingDate || "-"}
+
+■ 기자동행여부
+${data.reporterTogether || "-"}
+
+■ 제목
+${data.title || "-"}
+
+■ 특이사항
+${data.specialNote || "-"}
+
+■ 촬영 내용
+${data.shootingContent || "-"}
+
+■ 촬영장소
+${data.shootingLocation || "-"}
+
+■ 영상 기자
+${data.videoReporter || "-"}
+
+■ 취재기자
+${data.newsReporter || "-"}
+
+■ 영상 PD/VJ
+${data.videoPdVj || "-"}`;
+    }
+
+    function updatePreview() {
+      const preview = document.getElementById("previewBox");
+      if (preview) preview.textContent = getContent();
+    }
+
+    function resetForm() {
+      if (!confirm("현재 로그인 코드로 저장된 Note 내용을 초기화하시겠습니까?")) return;
+
+      fillFormData({});
+      localStorage.removeItem(getNoteKey());
+      updatePreview();
+      showToast("현재 로그인 코드의 Note 내용만 초기화되었습니다.");
+    }
+
+    async function copyContent() {
+      const content = getContent();
+
+      try {
+        await navigator.clipboard.writeText(content);
+        showToast("입력 내용이 복사되었습니다.");
+      } catch (e) {
+        showToast("복사에 실패했습니다. 브라우저 권한을 확인하세요.");
+      }
+    }
+
+    function saveRecord() {
+      const data = collectFormData();
+      const records = JSON.parse(localStorage.getItem(getRecordsKey()) || "[]");
+      const title = data.title || "제목 없음";
+
+      localStorage.setItem(getNoteKey(), JSON.stringify(data));
+
+      records.unshift({
+        title: title,
+        createdAt: new Date().toLocaleString("ko-KR"),
+        content: getContent()
+      });
+
+      localStorage.setItem(getRecordsKey(), JSON.stringify(records.slice(0, 30)));
+      showToast("저장되었습니다. 정식 배포 시 서버 동기화로 연결됩니다.");
+      renderRecords();
+    }
+
+    function renderRecords() {
+      const records = JSON.parse(localStorage.getItem(getRecordsKey()) || "[]");
+      const list = document.getElementById("recordsList");
+
+      if (!list) return;
+
+      if (!records.length) {
+        list.innerHTML = `<div class="manual-item"><strong>저장된 기록이 없습니다.</strong><span>Note 화면에서 저장 버튼을 누르면 이곳에 기록됩니다.</span></div>`;
+        return;
+      }
+
+      list.innerHTML = records.map((record, index) => `
+        <div class="record-item">
+          <strong>${escapeHTML(record.title)}</strong>
+          <small>${escapeHTML(record.createdAt)}</small>
+          <div class="preview-box">${escapeHTML(record.content)}</div>
+          <button type="button" class="btn-soft" onclick="copyRecord(${index})">이 기록 복사</button>
+        </div>
+      `).join("");
+    }
+
+    async function copyRecord(index) {
+      const records = JSON.parse(localStorage.getItem(getRecordsKey()) || "[]");
+
+      if (!records[index]) return;
+
+      try {
+        await navigator.clipboard.writeText(records[index].content);
+        showToast("기록 내용이 복사되었습니다.");
+      } catch (e) {
+        showToast("복사에 실패했습니다.");
+      }
+    }
+
+    function openParseModal() {
+      document.getElementById("parseModal").classList.remove("hidden");
+      const rawInput = document.getElementById("rawRequest");
+      if (rawInput) {
+        rawInput.value = "";
+        setTimeout(() => rawInput.focus(), 0);
+      }
+    }
+
+    function closeParseModal() {
+      const modal = document.getElementById("parseModal");
+      const rawInput = document.getElementById("rawRequest");
+
+      if (rawInput) rawInput.value = "";
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function normalizeReporterTogether(value) {
+      const raw = (value || "").replace(/\s/g, "");
+
+      if (!raw) return "";
+      if (raw.includes("동행안함") || raw.includes("동행아님") || raw.includes("미동행") || raw.includes("동행없음")) return "미동행";
+      if (raw.includes("현장합류")) return "현장합류";
+      if (raw.includes("동행")) return "동행";
+
+      return value;
+    }
+
+    function extractDate(value) {
+      const clean = (value || "").replace(/까지/g, "").trim();
+      const match = clean.match(/(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})/);
+
+      if (!match) return "";
+
+      const year = match[1];
+      const month = String(match[2]).padStart(2, "0");
+      const day = String(match[3]).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+    function classifyPeople(nameA, nameB) {
+      const candidates = [nameA, nameB].map(name => (name || "").trim()).filter(Boolean);
+
+      let newsReporter = "";
+      let videoReporter = "";
+      let videoPdVj = "";
+
+      candidates.forEach(name => {
+        if (VIDEO_REPORTERS.includes(name) && !videoReporter) {
+          videoReporter = name;
+        } else if (VIDEO_PD_VJ.includes(name) && !videoPdVj) {
+          videoPdVj = name;
+        } else if (!newsReporter) {
+          newsReporter = name;
+        }
+      });
+
+      return { newsReporter, videoReporter, videoPdVj };
+    }
+
+    function isSystemMessageLine(line) {
+      const text = (line || "").replace(/\s/g, "").trim();
+
+      if (!text) return true;
+      if (text === "MMS") return true;
+      if (text === "SMS") return true;
+      if (text === "LMS") return true;
+      if (text === "[Web발신]") return true;
+      if (text === "[WEB발신]") return true;
+      if (text === "[Web발신]" || text === "[Web발신]") return true;
+      if (text.includes("[Web발신]")) return true;
+      if (text.includes("[WEB발신]")) return true;
+
+      return false;
+    }
+
+    function parseRequest() {
+      const rawInput = document.getElementById("rawRequest");
+      const modal = document.getElementById("parseModal");
+      const raw = rawInput.value.trim();
+
+      if (!raw) {
+        showToast("붙여넣을 내용을 입력하세요.");
+        return;
+      }
+
+      // MMS, [Web발신] 같은 문자 시스템 문구는 제거
+      const lines = raw
+        .split(/\n+/)
+        .map(v => v.trim())
+        .filter(line => !isSystemMessageLine(line));
+
+      // 쉼표가 5개 이상 포함된 첫 번째 줄만 의뢰서 핵심 정보로 사용
+      let headerIndex = lines.findIndex(line => line.split(",").length >= 5);
+      if (headerIndex < 0) headerIndex = 0;
+
+      const header = lines[headerIndex] || "";
+      const parts = header.split(",").map(v => v.trim());
+
+      const title = parts[0] || "";
+      const people = classifyPeople(parts[1] || "", parts[2] || "");
+      const reporterTogether = normalizeReporterTogether(parts[3] || "");
+      const shootingLocation = parts[4] || "";
+      const shootingDate = extractDate(parts.slice(5).join(", "));
+
+      document.getElementById("title").value = title;
+      document.getElementById("requester").value = people.videoReporter || people.videoPdVj || "";
+      document.getElementById("newsReporter").value = people.newsReporter;
+      document.getElementById("videoReporter").value = people.videoReporter;
+      document.getElementById("videoPdVj").value = people.videoPdVj;
+      document.getElementById("reporterTogether").value = reporterTogether;
+      document.getElementById("shootingLocation").value = shootingLocation;
+      document.getElementById("shootingDate").value = shootingDate;
+
+      // 요청사항: 첫 번째 의뢰서 줄만 사용하고, 아래 본문은 자동 입력하지 않음
+      // 기존에 입력된 촬영 내용은 유지
+
+      updatePreview();
+
+      rawInput.value = "";
+      if (modal) modal.classList.add("hidden");
+
+      showPanel("formPanel");
+      showToast("의뢰 내용이 입력되었습니다.");
+    }
+
+    function openGuideModal() {
+      const modal = document.getElementById("guideModal");
+      if (modal) modal.classList.remove("hidden");
+    }
+
+    function closeGuideModal() {
+      const modal = document.getElementById("guideModal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function updateKoreaClock() {
+      const now = new Date();
+
+      const dateText = new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        weekday: "long"
+      }).format(now);
+
+      const timeText = new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      }).format(now);
+
+      const dateEl = document.getElementById("clockDate");
+      const timeEl = document.getElementById("clockTime");
+
+      if (dateEl) dateEl.textContent = dateText;
+      if (timeEl) timeEl.textContent = timeText;
+    }
+
+    function renderAccessCodes() {
+      const list = document.getElementById("accessCodeList");
+      if (!list) return;
+
+      const codes = getAllAccessCodes();
+
+      if (!codes.length) {
+        list.innerHTML = `<div class="manual-item"><strong>등록된 로그인 코드가 없습니다.</strong><span>새 로그인 코드를 입력한 뒤 코드 추가를 눌러 주세요.</span></div>`;
+        return;
+      }
+
+      list.innerHTML = codes.map((code, index) => `
+        <div class="record-item">
+          <strong>${escapeHTML(code)}</strong>
+          <small>로그인 코드 · 삭제 가능</small>
+          <div style="margin-top: 10px;">
+            <button type="button" class="btn-danger" onclick="removeAccessCodeByIndex(${index})">이 코드 삭제</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function addAccessCode() {
+      const input = document.getElementById("newAccessCode");
+      const newCode = input.value.trim();
+
+      if (!newCode) {
+        showToast("추가할 로그인 코드를 입력하세요.");
+        return;
+      }
+
+      if (newCode === ADMIN_CODE) {
+        showToast("관리자 코드는 일반 로그인 코드로 추가할 수 없습니다.");
+        return;
+      }
+
+      const codes = await ensureAccessCodesLoaded();
+
+      if (codes.includes(newCode)) {
+        showToast("이미 등록된 로그인 코드입니다.");
+        return;
+      }
+
+      try {
+        codes.push(newCode);
+        await saveAllAccessCodes(codes);
+        input.value = "";
+        renderAccessCodes();
+        showToast("로그인 코드가 Firebase에 추가되었습니다.");
+      } catch (error) {
+        console.error(error);
+        showToast("로그인 코드 저장에 실패했습니다.");
+      }
+    }
+
+    async function removeAccessCodeByIndex(index) {
+      const codes = await ensureAccessCodesLoaded();
+
+      if (!codes[index]) {
+        showToast("삭제할 코드를 찾을 수 없습니다.");
+        return;
+      }
+
+      if (!confirm(`로그인 코드 "${codes[index]}"를 삭제하시겠습니까?`)) return;
+
+      try {
+        codes.splice(index, 1);
+        await saveAllAccessCodes(codes);
+        renderAccessCodes();
+        showToast("로그인 코드가 Firebase에서 삭제되었습니다.");
+      } catch (error) {
+        console.error(error);
+        showToast("로그인 코드 삭제에 실패했습니다.");
+      }
+    }
+
+    function readLocalCodeArray(key) {
+      try {
+        const saved = localStorage.getItem(key);
+        if (!saved) return [];
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    async function importLocalAccessCodes() {
+      try {
+        const firebaseCodes = await ensureAccessCodesLoaded();
+
+        const localCandidates = [
+          ...readLocalCodeArray("accessCodes"),
+          ...readLocalCodeArray("customAccessCodes"),
+          ...readLocalCodeArray("accessCodesLocalBackup")
+        ];
+
+        const merged = normalizeCodes([
+          ...firebaseCodes,
+          ...localCandidates
+        ]).filter(code => code !== ADMIN_CODE);
+
+        if (!localCandidates.length) {
+          showToast("가져올 기존 로그인 코드가 없습니다.");
+          return;
+        }
+
+        await saveAllAccessCodes(merged);
+        renderAccessCodes();
+        showToast("기존 로그인 코드를 Firebase로 가져왔습니다.");
+      } catch (error) {
+        console.error(error);
+        showToast("기존 코드 가져오기에 실패했습니다.");
+      }
+    }
+
+    async function syncAccessCodes() {
+      try {
+        const codes = await ensureAccessCodesLoaded();
+        await saveAllAccessCodes(codes);
+        renderAccessCodes();
+        showToast("서버 동기화가 완료되었습니다.");
+      } catch (error) {
+        console.error(error);
+        showToast("서버 동기화에 실패했습니다.");
+      }
+    }
+
+    function showToast(message) {
+      const old = document.querySelector(".toast");
+      if (old) old.remove();
+
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        if (toast && toast.remove) toast.remove();
+      }, 1800);
+    }
+
+    function escapeHTML(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const accessInput = document.getElementById("accessCode");
+
+      if (accessInput) {
+        accessInput.addEventListener("keydown", event => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            login();
+          }
+        });
+      }
+
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("input", updatePreview);
+      });
+
+      updatePreview();
+      updateKoreaClock();
+      setInterval(updateKoreaClock, 1000);
+      loadAccessCodesFromFirebase();
+    });
+  </script>
+</body>
+</html>
