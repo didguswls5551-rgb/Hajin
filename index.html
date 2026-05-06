@@ -1062,37 +1062,16 @@
     function getContent() {
       const data = collectFormData();
 
-      return `[현장 인덱스 Note]
-
-■ 의뢰자
-${data.requester || "-"}
-
-■ 촬영일
-${data.shootingDate || "-"}
-
-■ 기자동행여부
-${data.reporterTogether || "-"}
-
-■ 제목
-${data.title || "-"}
-
-■ 특이사항
-${data.specialNote || "-"}
-
-■ 촬영 내용
-${data.shootingContent || "-"}
-
-■ 촬영장소
-${data.shootingLocation || "-"}
-
-■ 영상 기자
-${data.videoReporter || "-"}
-
-■ 취재기자
-${data.newsReporter || "-"}
-
-■ 영상 PD/VJ
-${data.videoPdVj || "-"}`;
+      return `의뢰자: ${data.requester || "-"}
+촬영일: ${data.shootingDate || "-"}
+기자동행여부: ${data.reporterTogether || "-"}
+제목: ${data.title || "-"}
+특이사항: ${data.specialNote || "-"}
+촬영내용: ${data.shootingContent || "-"}
+촬영장소: ${data.shootingLocation || "-"}
+영상기자: ${data.videoReporter || "-"}
+영상PD/VJ: ${data.videoPdVj || "-"}
+취재기자: ${data.newsReporter || "-"}`;
     }
 
     function updatePreview() {
